@@ -1,4 +1,4 @@
-package by.ladyka.purchase.view;
+package by.ladyka.purchase.dao;
 
 
 import org.hibernate.Criteria;

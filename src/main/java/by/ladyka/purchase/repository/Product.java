@@ -19,8 +19,9 @@ public class Product {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Product setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     @Basic
