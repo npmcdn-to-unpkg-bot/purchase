@@ -59,4 +59,12 @@ public class ResponseEntity implements Serializable {
     public void setData(Object data) {
         this.data = data;
     }
+
+//    public static ResponseEntity run(Method method) {
+//        try {
+//            return new ResponseEntity(data);
+//        } catch (Exception ex) {
+//            return new ResponseEntity(false,ex.getLocalizedMessage());
+//        }
+//    }
 }
