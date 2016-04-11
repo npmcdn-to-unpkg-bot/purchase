@@ -4,8 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "product")
-public class Product {
-    private Integer id;
+public class Product implements SetIdEntity {
+    private int id;
     private String name;
     private String description;
     private String image1;
@@ -15,11 +15,11 @@ public class Product {
 
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public Product setId(Integer id) {
+    public Product setId(int id) {
         this.id = id;
         return this;
     }
@@ -91,20 +91,19 @@ public class Product {
 
         Product product = (Product) o;
 
-        if (id != null ? !id.equals(product.id) : product.id != null) return false;
+        if (id != product.id) return false;
         if (name != null ? !name.equals(product.name) : product.name != null) return false;
         if (description != null ? !description.equals(product.description) : product.description != null) return false;
         if (image1 != null ? !image1.equals(product.image1) : product.image1 != null) return false;
         if (image2 != null ? !image2.equals(product.image2) : product.image2 != null) return false;
         if (image3 != null ? !image3.equals(product.image3) : product.image3 != null) return false;
-        if (userId != null ? !userId.equals(product.userId) : product.userId != null) return false;
+        return userId != null ? userId.equals(product.userId) : product.userId == null;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (image1 != null ? image1.hashCode() : 0);

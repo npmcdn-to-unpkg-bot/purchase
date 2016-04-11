@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Space {
+public class Space implements SetIdEntity {
     private Integer id;
     private String name;
 
@@ -16,8 +16,9 @@ public class Space {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Space setId(int id) {
         this.id = id;
+        return this;
     }
 
     @Basic

@@ -4,8 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "shopping_item", schema = "purchase", catalog = "")
-public class ShoppingItem {
-    private Integer id;
+public class ShoppingItem implements SetIdEntity {
+    private int id;
     private Integer productId;
     private Integer status;
     private Double price;
@@ -13,12 +13,13 @@ public class ShoppingItem {
 
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public ShoppingItem setId(int id) {
         this.id = id;
+        return this;
     }
 
     @Basic
@@ -68,7 +69,7 @@ public class ShoppingItem {
 
         ShoppingItem that = (ShoppingItem) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (id != that.id) return false;
         if (productId != null ? !productId.equals(that.productId) : that.productId != null) return false;
         if (status != null ? !status.equals(that.status) : that.status != null) return false;
         if (price != null ? !price.equals(that.price) : that.price != null) return false;
@@ -80,7 +81,7 @@ public class ShoppingItem {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id;
         result = 31 * result + (productId != null ? productId.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);

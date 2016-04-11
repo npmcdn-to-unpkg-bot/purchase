@@ -5,8 +5,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "shopping_list", schema = "purchase", catalog = "")
-public class ShoppingList {
-    private Integer id;
+public class ShoppingList implements SetIdEntity {
+    private int id;
     private Integer spaceId;
     private Timestamp createTime;
     private String name;
@@ -15,12 +15,13 @@ public class ShoppingList {
 
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public ShoppingList setId(int id) {
         this.id = id;
+        return this;
     }
 
     @Basic
@@ -80,7 +81,7 @@ public class ShoppingList {
 
         ShoppingList that = (ShoppingList) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (id != that.id) return false;
         if (spaceId != null ? !spaceId.equals(that.spaceId) : that.spaceId != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -92,7 +93,7 @@ public class ShoppingList {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id;
         result = 31 * result + (spaceId != null ? spaceId.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);

@@ -4,6 +4,8 @@ import by.ladyka.purchase.repository.Product;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductDAO extends BaseDAO<Product> {
 
@@ -15,11 +17,7 @@ public class ProductDAO extends BaseDAO<Product> {
     private static final String COL_IMG3 = "image3";
     private static final String COL_USER_ID = "userId";
 
-    public Product get(int id) {
-        return getEntity(Product.class,id);
-    }
-
-    public Object get(String query) {
-        return getListEntity(Product.class, Restrictions.like(COL_NAME,query),Restrictions.like(COL_DESCRIPTION,query));
+    public List<Product> get(String query) {
+        return getEntitiesFromCriterions(Restrictions.like(COL_NAME,query),Restrictions.like(COL_DESCRIPTION,query));
     }
 }

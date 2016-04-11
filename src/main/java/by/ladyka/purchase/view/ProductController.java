@@ -27,7 +27,7 @@ public class ProductController {
             method = {RequestMethod.GET}
     )
     @ResponseBody
-    public ResponseEntity getProduct(@PathVariable("id") int id) {
+    public ResponseEntity read(Principal principal, @PathVariable("id") int id) {
         return new ResponseEntity(productService.getProduct(id));
     }
 
@@ -65,6 +65,14 @@ public class ProductController {
     public
     @ResponseBody
     ResponseEntity delete(Principal principal, int id) {
+        boolean result = productService.delete(id);
+        return new ResponseEntity(result,result);
+    }
+
+    @RequestMapping(value = {"delete"}, method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ResponseEntity deleteNew(Principal principal, int id) {
         boolean result = productService.delete(id);
         return new ResponseEntity(result,result);
     }

@@ -1,6 +1,7 @@
 package by.ladyka.purchase.dao;
 
 
+import by.ladyka.purchase.repository.SetIdEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -10,38 +11,40 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Service
 @Transactional
-public class BaseDAO<T> {
+public abstract class BaseDAO<T> {
+
+    private Class<T> entityClass = (Class<T>)
+            ((ParameterizedType) getClass()
+                    .getGenericSuperclass())
+                    .getActualTypeArguments()[0];
+
     SessionFactory sessionFactory;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public BaseDAO() {
-    }
 
     @Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public Object save(Object entity) {
+    public T save(T entity) {
         this.sessionFactory.getCurrentSession().save(entity);
         return entity;
     }
 
-    public Object saveOrUpdate(Object entity) {
+    public T saveOrUpdate(T entity) {
         this.sessionFactory.getCurrentSession().saveOrUpdate(entity);
         return entity;
     }
 
-    public boolean delete(Object object) {
+    public boolean delete(T object) {
         try {
             this.sessionFactory.getCurrentSession().delete(object);
             return true;
@@ -51,36 +54,36 @@ public class BaseDAO<T> {
         }
     }
 
-    public <T> T getEntity(Class<T> entityClass, int id) {
-        return (T) sessionFactory.getCurrentSession().get(entityClass, id);
+    public T get(int id) {
+        return entityClass.cast(sessionFactory.getCurrentSession().get(entityClass, id));
     }
 
-    public <T> List<T> getListEntity(Class<T> entityClass, Object... objects) {
-        Criterion[] criterions = new Criterion[objects.length / 2 + 1];
+    public List<T> getEntities(Object... col_coma_value) {
+        Criterion[] criterions = new Criterion[col_coma_value.length / 2 + 1];
 
         try {
-            for(int e = 0; e < objects.length; e += 2) {
-                String field = String.valueOf(objects[e]);
-                Object value = objects[e + 1];
+            for (int e = 0; e < col_coma_value.length; e += 2) {
+                String field = String.valueOf(col_coma_value[e]);
+                Object value = col_coma_value[e + 1];
                 criterions[e / 2] = Restrictions.eq(field, value);
             }
         } catch (Exception var7) {
             var7.printStackTrace();
-            return new ArrayList();
+            return new ArrayList<T>();
         }
 
-        return this.getListEntity(entityClass, criterions);
+        return getEntitiesFromCriterions(criterions);
     }
 
-    public <T> List<T> getListEntity(Class<T> entityClass, Criterion... criterions) {
+    protected List<T> getEntitiesFromCriterions(Criterion... criterions) {
         try {
-            Criteria e = this.getCriteria(entityClass);
+            Criteria e = this.getCriteria();
             Criterion[] listEntity = criterions;
             int var5 = criterions.length;
 
-            for(int var6 = 0; var6 < var5; ++var6) {
+            for (int var6 = 0; var6 < var5; ++var6) {
                 Criterion criterion = listEntity[var6];
-                if(criterion != null) {
+                if (criterion != null) {
                     e.add(criterion);
                 }
             }
@@ -89,11 +92,11 @@ public class BaseDAO<T> {
             return var9;
         } catch (Exception var8) {
             var8.printStackTrace();
-            return new ArrayList();
+            return new ArrayList<T>();
         }
     }
 
-    public <T> Criteria getCriteria(Class<T> entityClass) {
+    public Criteria getCriteria() {
         return this.sessionFactory.getCurrentSession().createCriteria(entityClass);
     }
 
@@ -105,67 +108,27 @@ public class BaseDAO<T> {
         return this.sessionFactory.getCurrentSession().createQuery(queryString);
     }
 
-    public <T> List<T> getEntitys(Class<T> entityClass) {
-        Criteria criteria = this.getCriteria(entityClass);
-        return criteria.list();
-    }
-
-    public <T> List<T> getEntitys(Class<T> entityClass, Criterion... criterions) {
-        Criteria criteria = this.getCriteria(entityClass);
-        Criterion[] var4 = criterions;
-        int var5 = criterions.length;
-
-        for(int var6 = 0; var6 < var5; ++var6) {
-            Criterion criterion = var4[var6];
-            criteria.add(criterion);
-        }
-
-        return criteria.list();
-    }
-
-    public <T> T getEntity(Class<T> entityClass, Criterion...criterions) {
-        List<T> listEntities = getEntitys(entityClass, criterions);
-        switch (listEntities.size()) {
+    public T getEntity(Object... col_coma_value) {
+        List<T> list = getEntities(col_coma_value);
+        switch (list.size()) {
             case 0:
                 return null;
             case 1:
-                return listEntities.get(0);
-            default: {
-                for (Criterion c : criterions) {
-                    logger.warn(c.toString());
-                }
-                for (T t : listEntities) {
-                    logger.warn(t.toString());
-                }
-                return listEntities.get(0);
-            }
-        }
-    }
-
-
-    public <T> T getEntity(List<T> listEntities) {
-        switch(listEntities.size()) {
-            case 0:
-                return null;
-            case 1:
-                return listEntities.get(0);
+                return list.get(0);
             default:
-                for (Object t : listEntities) {
-                    this.logger.warn(t.toString());
-                }
-                return listEntities.get(0);
+                this.logger.warn("SIZE > 1" + Arrays.toString(list.toArray()));
+                return list.get(0);
         }
     }
 
-    public <T> T getOneValue(List<T> listEntity) {
-        switch(listEntity.size()) {
-            case 0:
-                return null;
-            case 1:
-                return listEntity.get(0);
-            default:
-                this.logger.warn("SIZE > 1" + Arrays.toString(listEntity.toArray()));
-                return listEntity.get(0);
+    public boolean delete(int id) {
+        try {
+            SetIdEntity t = (SetIdEntity) entityClass.newInstance();
+            t.setId(id);
+            delete((T) t);
+            return true;
+        } catch (Exception ex) {
+            return false;
         }
     }
 }

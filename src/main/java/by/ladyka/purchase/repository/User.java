@@ -7,8 +7,8 @@ import javax.persistence.Id;
 import java.sql.Timestamp;
 
 @Entity
-public class User {
-    private Integer id;
+public class User implements SetIdEntity {
+    private int id;
     private String username;
     private String email;
     private String password;
@@ -16,12 +16,13 @@ public class User {
 
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public User setId(int id) {
         this.id = id;
+        return this;
     }
 
     @Basic
@@ -71,7 +72,7 @@ public class User {
 
         User user = (User) o;
 
-        if (id != null ? !id.equals(user.id) : user.id != null) return false;
+        if (id != user.id) return false;
         if (username != null ? !username.equals(user.username) : user.username != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
@@ -82,7 +83,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
