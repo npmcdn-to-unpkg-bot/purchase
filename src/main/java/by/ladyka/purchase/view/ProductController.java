@@ -1,12 +1,14 @@
 package by.ladyka.purchase.view;
 
-import by.ladyka.purchase.repository.Product;
 import by.ladyka.purchase.servicies.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -49,7 +51,6 @@ public class ProductController {
     public
     @ResponseBody
     ResponseEntity update(Principal principal, int id, String name, String description, String image1, String image2, String image3, HttpServletRequest httpServletRequest) {
-        Product product = null;
         String method = httpServletRequest.getParameter("_method");
         switch (method) {
             case "PUT":
