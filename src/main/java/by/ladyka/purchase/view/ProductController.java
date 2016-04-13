@@ -30,7 +30,7 @@ public class ProductController {
     )
     @ResponseBody
     public ResponseEntity read(Principal principal, @PathVariable("id") int id) {
-        return new ResponseEntity(productService.getProduct(id));
+        return new ResponseEntity(productService.get(id));
     }
 
     @RequestMapping(method = RequestMethod.PUT)

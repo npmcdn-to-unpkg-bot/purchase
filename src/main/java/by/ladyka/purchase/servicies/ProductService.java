@@ -13,7 +13,7 @@ public class ProductService {
     @Autowired
     ProductDAO productDAO;
 
-    public Product getProduct(int id) {
+    public Product get(int id) {
         return productDAO.get(id);
     }
 

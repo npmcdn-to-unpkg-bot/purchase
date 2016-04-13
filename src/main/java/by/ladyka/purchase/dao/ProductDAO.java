@@ -2,11 +2,11 @@ package by.ladyka.purchase.dao;
 
 import by.ladyka.purchase.repository.Product;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Service
+@Repository
 public class ProductDAO extends BaseDAO<Product> {
 
     private static final String COL_ID = "id";
